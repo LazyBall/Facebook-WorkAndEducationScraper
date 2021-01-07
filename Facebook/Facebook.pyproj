@@ -39,6 +39,7 @@
     </Interpreter>
   </ItemGroup>
   <ItemGroup>
+    <Content Include="credentials%28example%29.yaml" />
     <Content Include="credentials.yaml" />
     <Content Include="output.json" />
     <Content Include="requirements.txt" />
