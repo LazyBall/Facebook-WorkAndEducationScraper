@@ -1,0 +1,6 @@
+#Lines starting with # and empty lines will be ignored
+andrew.ng.96
+durov
+zuck
+neiltyson
+yasya.mihaylova
