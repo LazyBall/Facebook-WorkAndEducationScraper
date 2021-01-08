@@ -159,24 +159,23 @@ def parse_work(work_item):
             key = work_info[:index]
             work_info = work_info[index+4:]
         else:
-            work_info = None
+            work_info = ""
         result[key] = {"info" : None, "dt_start" : None, "dt_end" : None}
         result[key]["info"] = work_info
         try:
-            work_info = work_item.find_element_by_xpath("./div/div/div[2]/div[2]/div/span[1]/span[1]"
-                                                        ).get_attribute('innerText')
-            if(utils.contains_year(work_info)):
-                    work_info = work_info.split(" - ", 2)
-                    result[key]["dt_start"] = work_info[0]
-                    result[key]["dt_end"] = work_info[1]
+            items = work_item.find_elements_by_xpath("./div/div/div[2]/div[2]/div/span/span[1]")
+            work_info = items[0].get_attribute('innerText')
+            if(len(items) == 2):
+                work_info = work_info.split(" - ", 2)
+                result[key]["dt_start"] = work_info[0]
+                result[key]["dt_end"] = work_info[1]
+                result[key]["info"] += " " + items[1].get_attribute('innerText')
+            elif(utils.contains_year(work_info) and " - " in work_info):
+                work_info = work_info.split(" - ", 2)
+                result[key]["dt_start"] = work_info[0]
+                result[key]["dt_end"] = work_info[1]
             else:
                 result[key]["info"] += " " + work_info
-        except:
-            pass
-        try:
-            work_info = work_item.find_element_by_xpath("./div/div/div[2]/div[2]/div/span[2]/span[1]"
-                                                        ).get_attribute('innerText')
-            result[key]["info"] += ", " + work_info
         except:
             pass
         return result
@@ -193,37 +192,25 @@ def parse_university(univ_item):
             key = univ_info[index + 4:]
             univ_info = univ_info[:index]
         else:
-            univ_info = None
+            univ_info = ""
         result[key] = {"info" : None, "dt_start" : None, "dt_end" : None, "type" : "UNIVERSITY"}
         result[key]["info"] = univ_info
         try:
-            univ_info = univ_item.find_element_by_xpath("./div/div/div[2]/div[2]/div/span[1]/span[1]"
-                                                        ).get_attribute('innerText')
+            items = univ_item.find_elements_by_xpath("./div/div/div[2]/div[2]/div/span/span[1]")
+            univ_info = items[-1].get_attribute('innerText')
             if(utils.contains_year(univ_info)):
                 if(univ_info.startswith("School year")):
                     result[key]["dt_end"]=univ_info[-4:]
-                else:
+                elif(" - " in univ_info):
                     univ_info = univ_info.split(" - ", 2)
                     result[key]["dt_start"] = univ_info[0]
                     result[key]["dt_end"] = univ_info[1]
             else:
                 result[key]["info"] += " " + univ_info
+            for item in items[:-1]:
+                result[key]["info"] += " " + item.get_attribute('innerText')
         except:
-            pass
-        try:
-            univ_info = univ_item.find_element_by_xpath("./div/div/div[2]/div[2]/div/span[2]/span[1]"
-                                                        ).get_attribute('innerText')
-            if(utils.contains_year(univ_info)):
-                if(univ_info.startswith("School year")):
-                    result[key]["dt_end"]=univ_info[-4:]
-                else:
-                    univ_info = univ_info.split(" - ", 2)
-                    result[key]["dt_start"] = univ_info[0]
-                    result[key]["dt_end"] = univ_info[1]
-            else:
-                result[key]["info"] += " " + univ_info
-        except:
-            pass
+            pass       
         return result
     return None
 
@@ -238,7 +225,7 @@ def parse_school(school_item):
             key = school_info[index + 4:]
             school_info = school_info[:index]
         else:
-            school_info = None
+            school_info = ""
         result[key] = {"info" : None, "dt_start" : None, "dt_end" : None, "type" : "SCHOOL"}
         result[key]["info"] = school_info
         try:
@@ -267,7 +254,7 @@ def parse_school(school_item):
 def print_commands():
     print("C O M M A N D S")
     print("[-c] - data from console")
-    print("[-clear] - clear console ouput")
+    print("[-clear] - clear console output")
     print("[-f] - data from file")
     print("[-h] - show commands")
     print("[-q] - exit")
