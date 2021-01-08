@@ -25,7 +25,7 @@ def scraper(ids):
         login(cfg["email"], cfg["password"])
         
         print("\n\nStarting Scraping...")
-        result = {}
+        result = {}    
         for id in ids:
             result[id] = scrap_profile(id)
         utils.save_to_file_in_json(result,"output.json")
@@ -49,8 +49,8 @@ def login(email, password):
         options = webdriver.ChromeOptions()
 
         #  Code to disable notifications pop up of Chrome Browser
-        #options.add_experimental_option("excludeSwitches",['enable-logging'])
-        #options.add_argument("headless")
+        options.add_experimental_option("excludeSwitches",['enable-logging'])
+        options.add_argument("headless")
         options.add_argument("disable-extensions")
         options.add_argument("disable-notifications")
         options.add_argument("disable-infobars")
